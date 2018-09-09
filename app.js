@@ -2,6 +2,7 @@ const express               = require('express'),
       bodyParser            = require('body-parser'), // json
       path                  = require('path'), // public folder related
       expejs                = require('ejs'),
+      morganLogger          = require('morgan'),
       mongoose              = require('mongoose'),
       expsession            = require('express-session'), // user related
       passport              = require('passport'), // user related
@@ -15,8 +16,10 @@ app.locals.moment           = require('moment');    // display comment add time
 const User                  = require('./models/user');
 
 const userRoute             = require('./routes/usermanage'),
-      commentsRoute         = require('./routes/comments');
+      indexRoute            = require('./routes/index');
+      // commentsRoute         = require('./routes/comments');
 
+app.use(morganLogger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
 
@@ -28,8 +31,8 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use(expsession ({
     secret: 'ChuChUyA is the CuTesT CAT evEr!',
-    // resave: false,
-    // saveUninitialized: false // session object will not be stored in the session store
+    resave: false,
+    saveUninitialized: false // session object will not be stored in the session store
 }));
 
 // To use Passport in an Express, configure it with the required passport.initialize() middleware
@@ -41,7 +44,7 @@ app.use(passport.session());
 // coming from passportLocalMongoose to tell passport for using local strategy to authenticate user data
 // taking data from sessions which is encoded and unencoded 
 // (the function is from passportLocalMongoose which we have imported
-passport.use(new LocalStrategy(User.authenticate())); 
+passport.use(new passportLocal(User.authenticate())); 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
@@ -49,7 +52,8 @@ mongoose.connect('mongodb://localhost:27017/comments', { useNewUrlParser: true }
 
 
 app.use('/user', userRoute);
-app.use('/comment', commentsRoute);
+app.use('/', indexRoute);
+//app.use('/comment', commentsRoute);
 
 
 const PORT = process.env.PORT || 3000 ;
