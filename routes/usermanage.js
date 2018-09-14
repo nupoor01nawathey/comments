@@ -43,5 +43,9 @@ router.get('/logout', (req, res) => {
     res.redirect('/user/login');
 });
 
+router.post('/add-question', (req, res) => {
+    console.log(`>>>> ${res.body}`);
+});
+
 
 module.exports = router;

@@ -16,9 +16,10 @@ app.locals.moment           = require('moment');    // display comment add time
 const User                  = require('./models/user');
 
 const userRoute             = require('./routes/usermanage'),
-      indexRoute            = require('./routes/index');
-      // commentsRoute         = require('./routes/comments');
-
+      indexRoute            = require('./routes/index'),
+      addQuestionRoute      = require('./routes/add-question');
+      // commentsRoute      = require('./routes/comments');
+    
 app.use(morganLogger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended : true }));
@@ -53,7 +54,7 @@ mongoose.connect('mongodb://localhost:27017/comments', { useNewUrlParser: true }
 
 app.use('/user', userRoute);
 app.use('/', indexRoute);
-//app.use('/comment', commentsRoute);
+app.use('/q', addQuestionRoute);
 
 
 const PORT = process.env.PORT || 3000 ;
