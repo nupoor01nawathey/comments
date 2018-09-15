@@ -29,11 +29,12 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(`${__dirname}/public`));
 
+mongoose.connect('mongodb://localhost:27017/comments', { useNewUrlParser: true });
 
 app.use(expsession ({
     secret: 'ChuChUyA is the CuTesT CAT evEr!',
     resave: false,
-    saveUninitialized: false // session object will not be stored in the session store
+    saveUninitialized: false, // session object will not be stored in the session store
 }));
 
 // To use Passport in an Express, configure it with the required passport.initialize() middleware
@@ -49,7 +50,12 @@ passport.use(new passportLocal(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-mongoose.connect('mongodb://localhost:27017/comments', { useNewUrlParser: true });
+
+// app.use((req, res, next) => {
+//     res.locals.session = req.session ;
+//     res.locals.user    = req.user  ;
+//     next();
+// });
 
 
 app.use('/user', userRoute);
